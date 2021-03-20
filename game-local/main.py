@@ -17,6 +17,8 @@ I wanted to see how much of a difference going from 10x10 to a 20x20 would make.
 # Formulação da Q table
 we simply pass the x and y deltas for the food and enemy to our agent.
 4 actions
+dicionário `[[s0,s1],[s2,s3]] -> [a0, a1, a2, a3]`
+size 3 -> len(q) = 625 estados possíveis (keys) = (SIZE*2 -1)**4
 
 # Experiment log
 ## Initial
@@ -40,6 +42,18 @@ on ep. 15000, mean reward is -47.53 (epsilon is 0.045)
 on ep. 18000, mean reward is -38.93 (epsilon is 0.025)
 on ep. 21000, mean reward is -33.63 (epsilon is 0.013)
 on ep. 24000, mean reward is -24.95 (epsilon is 0.007)
+
+## Size 3
+on ep. 0, mean reward is nan (epsilon is 0.900)
+on ep. 3000, mean reward is -90.15 (epsilon is 0.494)
+on ep. 6000, mean reward is -43.20 (epsilon is 0.271)
+on ep. 9000, mean reward is -25.77 (epsilon is 0.149)
+on ep. 12000, mean reward is -19.61 (epsilon is 0.082)
+on ep. 15000, mean reward is -13.44 (epsilon is 0.045)
+on ep. 18000, mean reward is -7.70 (epsilon is 0.025)
+on ep. 21000, mean reward is -5.25 (epsilon is 0.013)
+on ep. 24000, mean reward is -1.26 (epsilon is 0.007)
+
 '''
 import numpy as np
 from PIL import Image
@@ -51,7 +65,7 @@ import time
 
 style.use("ggplot")
 
-SIZE = 10
+SIZE = 3
 
 HM_EPISODES = 25000
 MOVE_PENALTY = 1
@@ -59,8 +73,8 @@ ENEMY_PENALTY = 300
 FOOD_REWARD = 25
 epsilon = 0.9
 EPS_DECAY = 0.9998  # Every episode will be epsilon*EPS_DECAY
-SHOW_EVERY = 3000  # how often to play through env visually.
-
+LOG_EVERY = 3000  # how often to play through env visually.
+SHOW_EVERY = 6000
 start_q_table = None # None or Filename
 
 LEARNING_RATE = 0.1
@@ -76,26 +90,7 @@ d = {1: (255, 175, 0),
      3: (0, 0, 255)}
 
 
-class Blob:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-
-    def reset(self):
-        self.x = np.random.randint(0, SIZE)
-        self.y = np.random.randint(0, SIZE)
-
-    def __str__(self):
-        return f"{self.x}, {self.y}"
-
-    def __sub__(self, other):
-        return (self.x-other.x, self.y-other.y)
-
-    def move(self, x, y):
-        self.x += x
-        self.y += y
-
-class BlobInteligent(Blob):
+class IntelligentAgent():
     def __init__(self, start_q_table):
         if start_q_table is None:
             self.q_table = {}
@@ -142,7 +137,7 @@ class Env():
     '''
     def seed(self, seed):
         '''
-        sets a seed that  governs the simulation's random aspects. For this environment, the seed  oversees the random fluctuations in inflation and rates of return.
+        Sets a seed that  governs the simulation's random aspects
         '''
         pass
 
@@ -150,7 +145,8 @@ class Env():
         '''
         resets the state for a new episode.
         '''
-        pass
+        observation = None
+        return observation
 
     def render(self):
         '''
@@ -158,107 +154,172 @@ class Env():
         '''
         pass
 
-    def step(self):
+    def step(self, action):
         '''
-        performs one step of your simulation
+        performs one step of the simulation
         '''
-        pass
+        observation = None
+        reward = None
+        done = None
+        info = None
+        return observation, reward, done, info
+
+#     observation = env.reset()
+
+#          = env.step(action) 
+
+
+class Blob:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+
+    def reset(self):
+        self.x = np.random.randint(0, SIZE)
+        self.y = np.random.randint(0, SIZE)
+
+    def __str__(self):
+        return f"{self.x}, {self.y}"
+
+    def __sub__(self, other):
+        return (self.x-other.x, self.y-other.y)
+
+    def move(self, x, y):
+        self.x += x
+        self.y += y
 
 class EnvBlob(Env):
     action_space = None
     observation_space = None
+    def __init__(self):
+        self.player = Blob()
+        self.food = Blob()
+        self.enemy = Blob()
+        super().__init__()
 
+    def reset(self):
+        self.player.reset()
+        self.food.reset()
+        self.enemy.reset()
+        self._step_counter = 0
+        self._done = False
+        #TODO: dont generate levels with colisions 
 
+    def observation(self):
+        return (self.player-self.food, self.player-self.enemy)
 
-### Main
-#env = wrap_env(gym.make("Atlantis-v0"))
-#observation = env.reset()
-#while True:
-#    env.render()
-#    action = agent(observation)
-#    action = env.action_space.sample() 
-#    observation, reward, done, info = env.step(action) 
-#    if done: 
-#      break;
-            
-episode_rewards = []
-player = BlobInteligent(start_q_table=start_q_table)
-food = Blob()
-enemy = Blob()
-for episode in range(HM_EPISODES):
-    player.reset()
-    food.reset()
-    enemy.reset()
-    if episode % SHOW_EVERY == 0:
-        print("on ep. %d, mean reward is %.2f (epsilon is %.3f)"%(episode, np.mean(episode_rewards[-SHOW_EVERY:]), epsilon))
-        show = True
-    else:
-        show = False
+    def step(self, action):
+        # Game mecanics
+        if action == 0 and self.player.x < (SIZE - 1):
+            self.player.move(x=1, y=0)
+        elif action == 1 and self.player.x>0:
+            self.player.move(x=-1, y=0)
+        elif action == 2 and self.player.y < (SIZE - 1):
+            self.player.move(x=0, y=1)
+        elif action == 3 and self.player.y>0:
+            self.player.move(x=0, y=-1)
 
-    episode_reward = 0
-    for i in range(200):
-        obs = (player-food, player-enemy)
-
-        # Take the action!
-        action = player.action(obs)
-        if action == 0 and player.x < (SIZE - 1):
-            player.move(x=1, y=0)
-        elif action == 1 and player.x>0:
-            player.move(x=-1, y=0)
-        elif action == 2 and player.y < (SIZE - 1):
-            player.move(x=0, y=1)
-        elif action == 3 and player.y>0:
-            player.move(x=0, y=-1)
-
-
-
-        #### MAYBE ###
-        #enemy.move()
-        #food.move()
-        ##############
-
-        # Game logic
-        if player.x == enemy.x and player.y == enemy.y:
+        # Reward function
+        if self.player.x == self.enemy.x and self.player.y == self.enemy.y:
             reward = -ENEMY_PENALTY
-        elif player.x == food.x and player.y == food.y:
+        elif self.player.x == self.food.x and self.player.y == self.food.y:
             reward = FOOD_REWARD
         else:
             reward = -MOVE_PENALTY
 
-        ## NOW WE KNOW THE REWARD, LET'S CALC YO
-        # first we need to obs immediately after the move.
-        new_obs = (player-food, player-enemy)
-        player.feedback(obs, new_obs, action, reward)
+        observation = (self.player-self.food, self.player-self.enemy)
 
+        self._step_counter += 1
+        if self._step_counter>=199 or reward == FOOD_REWARD or reward == -ENEMY_PENALTY:
+            self._done = True
+        else:
+            self._done = False
 
-        #if show:
-        #    env = np.zeros((SIZE, SIZE, 3), dtype=np.uint8)  # starts an rbg of our size
-        #    env[food.x][food.y] = d[FOOD_N]  # sets the food location tile to green color
-        #    env[player.x][player.y] = d[PLAYER_N]  # sets the player tile to blue
-        #    env[enemy.x][enemy.y] = d[ENEMY_N]  # sets the enemy location to red
-        #    img = Image.fromarray(env, 'RGB')  # reading to rgb. Apparently. Even tho color definitions are bgr. ???
-        #    img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
-        #    cv2.imshow("image", np.array(img))  # show it!
-        #    if reward == FOOD_REWARD or reward == -ENEMY_PENALTY:  # crummy code to hang at the end if we reach abrupt end for good reasons or not.
-        #        if cv2.waitKey(500) & 0xFF == ord('q'):
-        #            break
-        #    else:
-        #        if cv2.waitKey(1) & 0xFF == ord('q'):
-        #            break
+        info = None
+        return observation, reward, self._done, info
+
+    def render(self):
+        grid = np.zeros((SIZE, SIZE, 3), dtype=np.uint8)  # starts an rbg of our size
+        grid[self.food.x][self.food.y] = d[FOOD_N]  # sets the food location tile to green color
+        grid[self.player.x][self.player.y] = d[PLAYER_N]  # sets the player tile to blue
+        grid[self.enemy.x][self.enemy.y] = d[ENEMY_N]  # sets the enemy location to red
+        img = Image.fromarray(grid, 'RGB')  # reading to rgb. Apparently. Even tho color definitions are bgr. ???
+        img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
+        cv2.imshow("image", np.array(img))  # show it!
+        if self._done:  # wait some time at the end of the episode
+            if cv2.waitKey(500) & 0xFF == ord('q'):
+                return None
+        else:
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                return None
+
+### Main
+#env = wrap_env(gym.make("Atlantis-v0"))
+# for observation:
+#     observation = env.reset()
+#     while True:
+#         env.render()
+#         action = agent(observation)
+#         observation, reward, done, info = env.step(action) 
+#         if done: 
+#           break;
+            
+episode_rewards = []
+AI = IntelligentAgent(start_q_table=start_q_table)
+env = EnvBlob()
+
+for episode in range(HM_EPISODES):
+    env.reset()
+    episode_reward = 0
+    done = False
+
+    # Play the game within episode
+    while not done:
+        obs = env.observation()
+
+        # Take the action!
+        action = AI.action(obs)
+        #enemy.action() ??
+
+        new_obs, reward, done, info = env.step(action)
+        AI.feedback(obs, new_obs, action, reward)
+
+        if episode % SHOW_EVERY == 0:
+            env.render()
 
         episode_reward += reward
-        if reward == FOOD_REWARD or reward == -ENEMY_PENALTY:
-            break
 
-    #print(episode_reward)
+
+    if episode % LOG_EVERY == 0:
+        print("on ep. %d, mean reward is %.2f (epsilon is %.3f)"%(episode, np.mean(episode_rewards[-LOG_EVERY:]), epsilon))
+
     episode_rewards.append(episode_reward)
     epsilon *= EPS_DECAY
 
-moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,))/SHOW_EVERY, mode='valid')
+class Blob:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+
+    def reset(self):
+        self.x = np.random.randint(0, SIZE)
+        self.y = np.random.randint(0, SIZE)
+
+    def __str__(self):
+        return f"{self.x}, {self.y}"
+
+    def __sub__(self, other):
+        return (self.x-other.x, self.y-other.y)
+
+    def move(self, x, y):
+        self.x += x
+        self.y += y
+
+moving_avg = np.convolve(episode_rewards, np.ones((LOG_EVERY,))/LOG_EVERY, mode='valid')
 
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
-plt.ylabel(f"Reward {SHOW_EVERY}ma")
+plt.ylabel(f"Reward {LOG_EVERY}ma")
 plt.xlabel("episode #")
 plt.show()
 
-player.to_disk(f'model-{int(time.time())}.pickle')
+AI.to_disk(f'model-{int(time.time())}.pickle')
