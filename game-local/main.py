@@ -42,8 +42,7 @@ class IntelligentAgent():
             #                    self.q_table[i, ii, iii, iiii] = np.array([np.random.uniform(-5, 0) for _ in range(self.action_space)])
 
         else:
-            with open(start_q_table, "rb") as f:
-                self.q_table = pickle.load(f)
+            self.q_table = self.from_disk(start_q_table)
         # can look up from Q-table with: print(self.q_table[((-9, -2), (3, 9))]) for example
         #TODO:print('[AI] Init object with Q table size of %d elements'%(len(self.q_table)*len(list(self.q_table.values())[0])))
 
@@ -67,6 +66,10 @@ class IntelligentAgent():
     def to_disk(self, name):
         with open(name, "wb") as f:
             pickle.dump(self.q_table, f)
+
+    def from_disk(self, name):
+        with open(name, "rb") as f:
+            return pickle.load(f)
 
     def episode_callback(self):
         self.epsilon *= self.EPS_DECAY
