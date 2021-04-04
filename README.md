@@ -10,10 +10,11 @@ I wanted to see how much of a difference going from 10x10 to a 20x20 would make.
 
 # TODO STM
 * Rodar um hello world com OO
-* Alocar um vetor de 4*(2*2 -1)^4=324 e 4*(2*3-1)^4=2500 inteiros com sinal
+* Alocar um vetor de $4*(2*2 -1)^4=324$ e $4*(2*3-1)^4=2500$ inteiros com sinal
 
 # TODO RL
 * desassociar obervation_space (o que o agente vê) da grid_space (o que o ambiente sabe)
+* Usar uma matriz (e não association map) para armazenar a qtable
 * Reformular o observation space para consumir o mínimo de memória possível
 
 # Formulação da Q table

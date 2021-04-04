@@ -6,15 +6,18 @@ import pickle
 from matplotlib import style
 import time
 
-# Config
-SIZE = 2
+# Config train
+SIZE = 4
 HM_EPISODES = 30000
-LOG_EVERY = 3000  # how often to play through env visually.
-SHOW_EVERY = 40000
-start_q_table = None # None or Filename
+LOG_EVERY = 3000  
+SHOW_EVERY = 80000 # how often to play through env visually.
+start_q_table = None #'model-1616452736.pickle' #None # None or Filename
+EPSILON = 0.9
 
-
-
+# Config deploy
+#start_q_table = 'model.pickle' #None #'model-1616452736.pickle' #None # None or Filename
+#EPSILON = 0.0
+#SHOW_EVERY = 1
 
 
 class IntelligentAgent():
@@ -23,37 +26,43 @@ class IntelligentAgent():
     epsilon = 0.9
     EPS_DECAY = 0.9998
 
-    def __init__(self, start_q_table, obs_size:int):
+    def __init__(self, start_q_table, obs_size:int, obs_range: int = None, action_space: int = None, epsilon: float = 0.9):
+        self.epsilon = epsilon
+        if obs_range==None: obs_range = obs_size*2 - 1
+        if action_space==None: self.action_space = 4
+
         if start_q_table is None:
-            self.q_table = {}
-            for i in range(-obs_size+1, obs_size):
-                for ii in range(-obs_size+1, obs_size):
-                    for iii in range(-obs_size+1, obs_size):
-                            for iiii in range(-obs_size+1, obs_size):
-                                self.q_table[((i, ii), (iii, iiii))] = [np.random.uniform(-5, 0) for _ in range(4)]
+            #self.q_table = np.array((obs_range, obs_range, obs_range, obs_range, self.action_space))# np.random.rand(obs_range, obs_range, obs_range, obs_range, self.action_space)*5 - 5
+            self.q_table = np.random.rand(obs_range, obs_range, obs_range, obs_range, self.action_space)*5 - 5
+            #self.q_table = {}
+            #for i in range(obs_range):
+            #    for ii in range(obs_range):
+            #        for iii in range(obs_range):
+            #                for iiii in range(obs_range):
+            #                    self.q_table[i, ii, iii, iiii] = np.array([np.random.uniform(-5, 0) for _ in range(self.action_space)])
 
         else:
             with open(start_q_table, "rb") as f:
                 self.q_table = pickle.load(f)
-
-        print('[AI] Init object with Q table size of %d elements'%(len(self.q_table)*len(list(self.q_table.values())[0])))
+        # can look up from Q-table with: print(self.q_table[((-9, -2), (3, 9))]) for example
+        #TODO:print('[AI] Init object with Q table size of %d elements'%(len(self.q_table)*len(list(self.q_table.values())[0])))
 
         super().__init__()
 
     def action(self, obs):
         if np.random.random() > self.epsilon:
-            action = np.argmax(self.q_table[obs])
+            action = np.argmax(self.q_table[obs[0], obs[1], obs[2], obs[3], :])
         else:
-            action = np.random.randint(0, 4)
+            action = np.random.randint(0, self.action_space)
 
         return action
 
     def feedback(self, obs, new_obs, action, reward):
-        max_future_q = np.max(self.q_table[new_obs])
-        current_q = self.q_table[obs][action]
+        max_future_q = np.max(self.q_table[obs[0], obs[1], obs[2], obs[3], :])
+        current_q = self.q_table[obs[0], obs[1], obs[2], obs[3], action]
 
         new_q = (1 - self.LEARNING_RATE) * current_q + self.LEARNING_RATE * (reward + self.DISCOUNT * max_future_q)
-        self.q_table[obs][action] = new_q
+        self.q_table[obs[0], obs[1], obs[2], obs[3], action] = new_q
 
     def to_disk(self, name):
         with open(name, "wb") as f:
@@ -62,7 +71,6 @@ class IntelligentAgent():
     def episode_callback(self):
         self.epsilon *= self.EPS_DECAY
 
-# can look up from Q-table with: print(self.q_table[((-9, -2), (3, 9))]) for example
 class Env():
     '''
     Environment - OpenGym interface
@@ -96,11 +104,6 @@ class Env():
         done = None
         info = None
         return observation, reward, done, info
-
-#     observation = env.reset()
-
-#          = env.step(action) 
-
 
 class Blob:
     def __init__(self):
@@ -148,12 +151,12 @@ class EnvBlob(Env):
         super().__init__()
 
     def reset(self):
-        self.player.set_pos(np.random.randint(0, self.obs_size), np.random.randint(0, self.obs_size))
-        self.food.set_pos(np.random.randint(0, self.obs_size), np.random.randint(0, self.obs_size))
-        self.enemy.set_pos(np.random.randint(0, self.obs_size), np.random.randint(0, self.obs_size))
+        inits = np.random.default_rng().choice(self.obs_size, size=6, replace=True)
+        self.player.set_pos(inits[0], inits[1])
+        self.food.set_pos(inits[2], inits[3])
+        self.enemy.set_pos(inits[4], inits[5])
         self._step_counter = 0
         self._done = False
-        #TODO: dont generate levels with colisions 
 
     def observation(self):
         # TODO: calculate observation based on the grid_state
@@ -163,7 +166,10 @@ class EnvBlob(Env):
         #        return s
         #    else:
         #        return x
-        return (self.player-self.food, self.player-self.enemy)
+        return (self.player.x-self.food.x+self.obs_size-1, 
+                self.player.y-self.food.y+self.obs_size-1, 
+                self.player.x-self.enemy.x+self.obs_size-1, 
+                self.player.y-self.enemy.y+self.obs_size-1)
 
     def step(self, action):
         # Game mechanics
@@ -204,17 +210,17 @@ class EnvBlob(Env):
         img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
         cv2.imshow("image", np.array(img))  # show it!
         if self._done:  # wait some time at the end of the episode
-            if cv2.waitKey(500) & 0xFF == ord('q'):
+            if cv2.waitKey(1000) & 0xFF == ord('q'):
                 return None
         else:
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(100) & 0xFF == ord('q'):
                 return None
 
 
            
 
 env = EnvBlob(obs_size=SIZE)
-AI = IntelligentAgent(start_q_table=start_q_table, obs_size=env.obs_size)
+AI = IntelligentAgent(start_q_table=start_q_table, obs_size=env.obs_size, epsilon=EPSILON)
 
 episode_rewards = []
 for episode in range(HM_EPISODES):
@@ -225,6 +231,7 @@ for episode in range(HM_EPISODES):
     # Play the game within episode
     while not done:
         obs = env.observation()
+        #print(obs)
         # Take the action!
         action = AI.action(obs)
         #enemy.action() ??
@@ -233,17 +240,19 @@ for episode in range(HM_EPISODES):
         AI.feedback(obs, new_obs, action, reward)
         episode_reward += reward
 
-        if episode % SHOW_EVERY == 0:
+        if episode % SHOW_EVERY == 0 and episode!=0:
             env.render()
     if episode % LOG_EVERY == 0:
         print("on ep. %d, mean reward is %.2f (epsilon is %.3f)"%(episode, np.mean(episode_rewards[-LOG_EVERY:]), AI.epsilon))
 
     episode_rewards.append(episode_reward)
     AI.episode_callback()
-    
+    #break
 moving_avg = np.convolve(episode_rewards, np.ones((LOG_EVERY,))/LOG_EVERY, mode='valid')
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
 plt.ylabel(f"Reward {LOG_EVERY}ma")
 plt.xlabel("episode #")
 plt.show()
-AI.to_disk(f'model-{int(time.time())}.pickle')
+#AI.to_disk(f'model-{int(time.time())}.pickle')
+AI.to_disk(f'model.pickle')
+
