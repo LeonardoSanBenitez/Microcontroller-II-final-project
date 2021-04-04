@@ -7,16 +7,17 @@ from matplotlib import style
 import time
 
 # Config train
-SIZE = 4
-HM_EPISODES = 30000
+SIZE = 3
+GRID_SIZE = 4
+HM_EPISODES = 60000
 LOG_EVERY = 3000  
-SHOW_EVERY = 80000 # how often to play through env visually.
+SHOW_EVERY = 50000 # how often to play through env visually.
 start_q_table = None #'model-1616452736.pickle' #None # None or Filename
 EPSILON = 0.9
 
 # Config deploy
-#start_q_table = 'model.pickle' #None #'model-1616452736.pickle' #None # None or Filename
-#EPSILON = 0.0
+start_q_table = 'model.pickle' #None #'model-1616452736.pickle' #None # None or Filename
+EPSILON = 0.3
 #SHOW_EVERY = 1
 
 
@@ -109,9 +110,10 @@ class Env():
         return observation, reward, done, info
 
 class Blob:
-    def __init__(self):
+    def __init__(self, color:tuple = (255,255,255)):
         self.x = 0
         self.y = 0
+        self.color = color
 
     def set_pos(self, x, y):
         self.x = x
@@ -140,21 +142,32 @@ class EnvBlob(Env):
     ENEMY_PENALTY = 300
     FOOD_REWARD = 25
 
-    # Color dict
-    d = {1: (255, 175, 0),
-        2: (0, 255, 0),
-        3: (0, 0, 255)}
 
     def __init__(self, obs_size:int = 3, grid_size:int = 10):
-        self.player = Blob()
-        self.food = Blob()
-        self.enemy = Blob()
+        self.player = Blob(color=(255, 175, 0))
+        self.food = Blob(color=(0, 255, 0))
+        self.enemy = Blob(color=(0, 0, 255))
         self.obs_size = obs_size
         self.grid_size = grid_size
         super().__init__()
 
     def reset(self):
-        inits = np.random.default_rng().choice(self.obs_size, size=6, replace=True)
+        # generate unique tuples
+        inits = [0]*6
+        inits[0] = np.random.choice(self.grid_size)#np.random.default_rng().choice(self.grid_size, size=6, replace=False)
+        inits[1] = np.random.choice(self.grid_size)
+        while True:
+            inits[2] = np.random.choice(self.grid_size)
+            inits[3] = np.random.choice(self.grid_size)
+            if inits[2]!=inits[0] or inits[3]!=inits[1]:
+                break
+        while True:
+            inits[4] = np.random.choice(self.grid_size)
+            inits[5] = np.random.choice(self.grid_size)
+            if (inits[4]!=inits[0] or inits[5]!=inits[1]) and (inits[2]!=inits[0] or inits[3]!=inits[1]):
+                break
+
+        # Reset the agents
         self.player.set_pos(inits[0], inits[1])
         self.food.set_pos(inits[2], inits[3])
         self.enemy.set_pos(inits[4], inits[5])
@@ -162,25 +175,28 @@ class EnvBlob(Env):
         self._done = False
 
     def observation(self):
-        # TODO: calculate observation based on the grid_state
-        # Maybe something along the line:
-        #def saturation(x, s):
-        #    if x>s:
-        #        return s
-        #    else:
-        #        return x
-        return (self.player.x-self.food.x+self.obs_size-1, 
-                self.player.y-self.food.y+self.obs_size-1, 
-                self.player.x-self.enemy.x+self.obs_size-1, 
-                self.player.y-self.enemy.y+self.obs_size-1)
+        return (self.preprocess_obs(self.player.x-self.food.x), 
+                self.preprocess_obs(self.player.y-self.food.y), 
+                self.preprocess_obs(self.player.x-self.enemy.x), 
+                self.preprocess_obs(self.player.y-self.enemy.y))
+
+    def preprocess_obs(self, obs:int):
+        '''
+        Convert the env internal representation to what is actually shown to the agent
+        '''
+        max_obs = self.obs_size -1
+        if obs>max_obs: obs = max_obs   # Saturation
+        if obs<-max_obs: obs = -max_obs
+        obs = obs+max_obs # make positive
+        return obs
 
     def step(self, action):
         # Game mechanics
-        if action == 0 and self.player.x < (self.obs_size - 1):
+        if action == 0 and self.player.x < (self.grid_size - 1):
             self.player.move(x=1, y=0)
         elif action == 1 and self.player.x>0:
             self.player.move(x=-1, y=0)
-        elif action == 2 and self.player.y < (self.obs_size - 1):
+        elif action == 2 and self.player.y < (self.grid_size - 1):
             self.player.move(x=0, y=1)
         elif action == 3 and self.player.y>0:
             self.player.move(x=0, y=-1)
@@ -205,10 +221,10 @@ class EnvBlob(Env):
         return observation, reward, self._done, info
 
     def render(self):
-        grid = np.zeros((self.obs_size, self.obs_size, 3), dtype=np.uint8)  # starts an rbg of our size
-        grid[self.food.x][self.food.y] = self.d[self.FOOD_N]  # sets the food location tile to green color
-        grid[self.player.x][self.player.y] = self.d[self.PLAYER_N]  # sets the player tile to blue
-        grid[self.enemy.x][self.enemy.y] = self.d[self.ENEMY_N]  # sets the enemy location to red
+        grid = np.zeros((self.grid_size, self.grid_size, 3), dtype=np.uint8)  # starts an rbg of our size
+        grid[self.food.x][self.food.y] = self.food.color
+        grid[self.player.x][self.player.y] = self.player.color
+        grid[self.enemy.x][self.enemy.y] = self.enemy.color
         img = Image.fromarray(grid, 'RGB')  # reading to rgb. Apparently. Even tho color definitions are bgr. ???
         img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
         cv2.imshow("image", np.array(img))  # show it!
@@ -222,19 +238,23 @@ class EnvBlob(Env):
 
            
 
-env = EnvBlob(obs_size=SIZE)
+env = EnvBlob(obs_size=SIZE, grid_size=GRID_SIZE)
 AI = IntelligentAgent(start_q_table=start_q_table, obs_size=env.obs_size, epsilon=EPSILON)
 
 episode_rewards = []
 for episode in range(HM_EPISODES):
     env.reset()
+
+    assert env.player.x == env.enemy.x and env.player.y == env.enemy.y, 'Impossible game generated'
+    assert env.player.x == env.food.x and env.player.y == env.food.y, 'Impossible game generated'
+
     episode_reward = 0
     done = False
 
     # Play the game within episode
     while not done:
         obs = env.observation()
-        #print(obs)
+
         # Take the action!
         action = AI.action(obs)
         #enemy.action() ??
@@ -244,6 +264,10 @@ for episode in range(HM_EPISODES):
         episode_reward += reward
 
         if episode % SHOW_EVERY == 0 and episode!=0:
+            print(env.player)
+            print(env.food)
+            print(env.enemy)
+            print(new_obs)
             env.render()
     if episode % LOG_EVERY == 0:
         print("on ep. %d, mean reward is %.2f (epsilon is %.3f)"%(episode, np.mean(episode_rewards[-LOG_EVERY:]), AI.epsilon))

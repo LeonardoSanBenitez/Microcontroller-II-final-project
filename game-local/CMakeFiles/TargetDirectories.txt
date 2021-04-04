@@ -1,0 +1,3 @@
+/home/benitez/Desktop/Microcontroller-II-final-project/game-local/CMakeFiles/rebuild_cache.dir
+/home/benitez/Desktop/Microcontroller-II-final-project/game-local/CMakeFiles/edit_cache.dir
+/home/benitez/Desktop/Microcontroller-II-final-project/game-local/CMakeFiles/main.dir

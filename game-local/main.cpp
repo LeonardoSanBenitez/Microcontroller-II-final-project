@@ -1,6 +1,6 @@
-/* g++ main.cpp -o main `pkg-config --cflags --libs opencv` */
-/* cmake . && make */
-//#include <opencv2/imgproc.hpp>
+/* g++ main.cpp -o main `pkg-config --cflags --libs opencv` && main*/
+/* cmake . && make && ./main*/
+#include <opencv2/imgproc.hpp>
 
 #include <iostream>
 #include "InteligentAgent.h"

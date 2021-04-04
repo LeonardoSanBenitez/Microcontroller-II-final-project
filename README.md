@@ -23,6 +23,12 @@ we simply pass the x and y deltas for the food and enemy to our agent.
 dicionário `[[s0,s1],[s2,s3]] -> [a0, a1, a2, a3]`
 size 3 -> len(q) = 625 estados possíveis (keys) = (SIZE*2 -1)**4
 
+# Lições
+ao tornar o ambiente parcialmente observável, o aprendizado ficou muito mais difícil
+O ideal seria ter uma representação PROBABILISTICA do ambiente (ex: HMM), e não determinstítca
+
+Ao mudar as ações possíveis (não diagonal), o aprendizado ficou mais fácil
+
 # Experiment log
 ## Initial
 on ep. 0, mean reward is nan (epsilon is 0.900)
@@ -67,3 +73,21 @@ on ep. 18000, mean reward is -4.86 (epsilon is 0.025)
 on ep. 21000, mean reward is -5.68 (epsilon is 0.013)
 on ep. 24000, mean reward is -1.78 (epsilon is 0.007)
 on ep. 27000, mean reward is -4.25 (epsilon is 0.004)
+
+
+
+
+
+on ep. 0, mean reward is nan (epsilon is 0.900)
+on ep. 3000, mean reward is -107.94 (epsilon is 0.494)
+on ep. 6000, mean reward is -67.67 (epsilon is 0.271)
+on ep. 9000, mean reward is -48.08 (epsilon is 0.149)
+on ep. 12000, mean reward is -32.83 (epsilon is 0.082)
+on ep. 15000, mean reward is -22.05 (epsilon is 0.045)
+on ep. 18000, mean reward is -19.59 (epsilon is 0.025)
+on ep. 21000, mean reward is -11.01 (epsilon is 0.013)
+on ep. 24000, mean reward is -12.11 (epsilon is 0.007)
+on ep. 27000, mean reward is -8.21 (epsilon is 0.004)
+
+
+
