@@ -8,24 +8,24 @@ import time
 
 # Config train
 SIZE = 3
-GRID_SIZE = 4
-HM_EPISODES = 60000
+GRID_SIZE = 10
+HM_EPISODES = 30000
 LOG_EVERY = 3000  
-SHOW_EVERY = 50000 # how often to play through env visually.
+SHOW_EVERY = 500000 # how often to play through env visually.
 start_q_table = None #'model-1616452736.pickle' #None # None or Filename
 EPSILON = 0.9
 
 # Config deploy
 start_q_table = 'model.pickle' #None #'model-1616452736.pickle' #None # None or Filename
-EPSILON = 0.3
-#SHOW_EVERY = 1
+EPSILON = 0
+SHOW_EVERY = 1
 
 
 class IntelligentAgent():
-    LEARNING_RATE = 0.15
-    DISCOUNT = 0.95
+    LEARNING_RATE = 0.3
+    DISCOUNT = 0.2
     epsilon = 0.9
-    EPS_DECAY = 0.9998
+    EPS_DECAY = 0.99995
 
     def __init__(self, start_q_table, obs_size:int, obs_range: int = None, action_space: int = None, epsilon: float = 0.9):
         self.epsilon = epsilon
@@ -45,7 +45,7 @@ class IntelligentAgent():
         else:
             self.q_table = self.from_disk(start_q_table)
         # can look up from Q-table with: print(self.q_table[((-9, -2), (3, 9))]) for example
-        #TODO:print('[AI] Init object with Q table size of %d elements'%(len(self.q_table)*len(list(self.q_table.values())[0])))
+        print('[AI] Init object with Q table size of %d elements'%self.q_table.flatten().shape[0])
 
         super().__init__()
 
@@ -110,9 +110,10 @@ class Env():
         return observation, reward, done, info
 
 class Blob:
-    def __init__(self, color:tuple = (255,255,255)):
+    def __init__(self, limit:int, color:tuple = (255,255,255)):
         self.x = 0
         self.y = 0
+        self.limit = limit
         self.color = color
 
     def set_pos(self, x, y):
@@ -129,26 +130,32 @@ class Blob:
         self.x += x
         self.y += y
 
+        # Wrap border
+        if self.x >= self.limit:
+            self.x = 0
+        if self.x<0:
+            self.x = self.limit - 1
+        if self.y >= self.limit:
+            self.y = 0
+        if self.y<0:
+            self.y = self.limit - 1
+
 class EnvBlob(Env):
     action_space = 4
     obs_size = None
     grid_size = None
 
-    PLAYER_N = 1  # player key in dict
-    FOOD_N = 2  # food key in dict
-    ENEMY_N = 3  # enemy key in dict
-
-    MOVE_PENALTY = 1
-    ENEMY_PENALTY = 300
-    FOOD_REWARD = 25
-
+    ENEMY_PENALTY = -300
+    FOOD_REWARD = 1000
 
     def __init__(self, obs_size:int = 3, grid_size:int = 10):
-        self.player = Blob(color=(255, 175, 0))
-        self.food = Blob(color=(0, 255, 0))
-        self.enemy = Blob(color=(0, 0, 255))
         self.obs_size = obs_size
         self.grid_size = grid_size
+
+        self.player = Blob(color=(255, 175, 0), limit=self.grid_size)
+        self.food = Blob(color=(0, 255, 0), limit=self.grid_size)
+        self.enemy = Blob(color=(0, 0, 255), limit=self.grid_size)
+
         super().__init__()
 
     def reset(self):
@@ -164,7 +171,7 @@ class EnvBlob(Env):
         while True:
             inits[4] = np.random.choice(self.grid_size)
             inits[5] = np.random.choice(self.grid_size)
-            if (inits[4]!=inits[0] or inits[5]!=inits[1]) and (inits[2]!=inits[0] or inits[3]!=inits[1]):
+            if (inits[4]!=inits[0] or inits[5]!=inits[1]) and (inits[4]!=inits[2] or inits[5]!=inits[3]):
                 break
 
         # Reset the agents
@@ -192,27 +199,37 @@ class EnvBlob(Env):
 
     def step(self, action):
         # Game mechanics
-        if action == 0 and self.player.x < (self.grid_size - 1):
-            self.player.move(x=1, y=0)
-        elif action == 1 and self.player.x>0:
-            self.player.move(x=-1, y=0)
-        elif action == 2 and self.player.y < (self.grid_size - 1):
-            self.player.move(x=0, y=1)
-        elif action == 3 and self.player.y>0:
-            self.player.move(x=0, y=-1)
+        if action == 0: self.player.move(x=1, y=0)
+        elif action == 1: self.player.move(x=-1, y=0)
+        elif action == 2: self.player.move(x=0, y=1)
+        elif action == 3: self.player.move(x=0, y=-1)
+        else:
+            raise ValueError('Invalid action')
 
         # Reward function
-        if self.player.x == self.enemy.x and self.player.y == self.enemy.y:
-            reward = -self.ENEMY_PENALTY
-        elif self.player.x == self.food.x and self.player.y == self.food.y:
+        distance_enemy = self.player - self.enemy
+        distance_food = self.player - self.food
+        if distance_enemy[0]==0 and distance_enemy[1]==0:
+            # exactly on the enemy
+            reward = self.ENEMY_PENALTY
+        elif distance_food[0]==0 and distance_food[1]==0:
+            # exactly on the food
             reward = self.FOOD_REWARD
+        elif (distance_enemy[0]**2 + distance_enemy[1]**2)<3:
+            # Near enemy
+            reward = int(self.ENEMY_PENALTY/2)
+        elif (distance_food[0]**2 + distance_food[1]**2)<5:
+            # Near food
+            reward = 0
         else:
-            reward = -self.MOVE_PENALTY
+        #    # Near food
+            reward = -1
+        #    reward = int(-0.1*self.FOOD_REWARD + 0.1*self.FOOD_REWARD/(distance_food[0]**2 + distance_food[1]**2))
 
         observation = self.observation()
 
         self._step_counter += 1
-        if self._step_counter>=199 or reward == self.FOOD_REWARD or reward == -self.ENEMY_PENALTY:
+        if self._step_counter>=199 or reward == self.FOOD_REWARD or reward == self.ENEMY_PENALTY:
             self._done = True
         else:
             self._done = False
@@ -245,8 +262,9 @@ episode_rewards = []
 for episode in range(HM_EPISODES):
     env.reset()
 
-    assert env.player.x == env.enemy.x and env.player.y == env.enemy.y, 'Impossible game generated'
-    assert env.player.x == env.food.x and env.player.y == env.food.y, 'Impossible game generated'
+    assert env.player.x != env.enemy.x or env.player.y != env.enemy.y, 'Impossible game generated'
+    assert env.player.x != env.food.x or env.player.y != env.food.y, 'Impossible game generated'
+    assert env.enemy.x != env.food.x or env.enemy.y != env.food.y, 'Impossible game generated'
 
     episode_reward = 0
     done = False
@@ -264,10 +282,12 @@ for episode in range(HM_EPISODES):
         episode_reward += reward
 
         if episode % SHOW_EVERY == 0 and episode!=0:
+            print('------------', np.random.random())
             print(env.player)
             print(env.food)
             print(env.enemy)
             print(new_obs)
+            print(reward)
             env.render()
     if episode % LOG_EVERY == 0:
         print("on ep. %d, mean reward is %.2f (epsilon is %.3f)"%(episode, np.mean(episode_rewards[-LOG_EVERY:]), AI.epsilon))
@@ -275,11 +295,14 @@ for episode in range(HM_EPISODES):
     episode_rewards.append(episode_reward)
     AI.episode_callback()
     #break
+
+AI.to_disk(f'model.pickle')
+
 moving_avg = np.convolve(episode_rewards, np.ones((LOG_EVERY,))/LOG_EVERY, mode='valid')
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
 plt.ylabel(f"Reward {LOG_EVERY}ma")
 plt.xlabel("episode #")
 plt.show()
 #AI.to_disk(f'model-{int(time.time())}.pickle')
-AI.to_disk(f'model.pickle')
+
 

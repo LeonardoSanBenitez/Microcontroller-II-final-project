@@ -10,7 +10,7 @@ I wanted to see how much of a difference going from 10x10 to a 20x20 would make.
 
 # TODO STM
 * Rodar um hello world com OO
-* Alocar um vetor de $4*(2*2 -1)^4=324$ e $4*(2*3-1)^4=2500$ inteiros com sinal
+* Alocar um vetor de $4*(2*2 -1)^4=324$ e $4*(2*3-1)^4=q$ inteiros com sinal
 
 # TODO RL
 * desassociar obervation_space (o que o agente vê) da grid_space (o que o ambiente sabe)
@@ -78,16 +78,14 @@ on ep. 27000, mean reward is -4.25 (epsilon is 0.004)
 
 
 
+## SIZE = 8, GRID_SIZE = , 30k episodes, 
 on ep. 0, mean reward is nan (epsilon is 0.900)
-on ep. 3000, mean reward is -107.94 (epsilon is 0.494)
-on ep. 6000, mean reward is -67.67 (epsilon is 0.271)
-on ep. 9000, mean reward is -48.08 (epsilon is 0.149)
-on ep. 12000, mean reward is -32.83 (epsilon is 0.082)
-on ep. 15000, mean reward is -22.05 (epsilon is 0.045)
-on ep. 18000, mean reward is -19.59 (epsilon is 0.025)
-on ep. 21000, mean reward is -11.01 (epsilon is 0.013)
-on ep. 24000, mean reward is -12.11 (epsilon is 0.007)
-on ep. 27000, mean reward is -8.21 (epsilon is 0.004)
-
-
-
+on ep. 3000, mean reward is 283.38 (epsilon is 0.775)
+on ep. 6000, mean reward is 601.37 (epsilon is 0.667)
+on ep. 9000, mean reward is 724.75 (epsilon is 0.574)
+on ep. 12000, mean reward is 792.05 (epsilon is 0.494)
+on ep. 15000, mean reward is 836.25 (epsilon is 0.425)
+on ep. 18000, mean reward is 879.22 (epsilon is 0.366)
+on ep. 21000, mean reward is 882.49 (epsilon is 0.315)
+on ep. 24000, mean reward is 907.04 (epsilon is 0.271)
+on ep. 27000, mean reward is 915.27 (epsilon is 0.233)
