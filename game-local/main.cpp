@@ -36,13 +36,53 @@ class Step {
     int info;
 };
 
+
+
+
+
+
+class Blob{
+    public:
+    int x;
+    int y;
+    int _limit;
+
+    Blob(int limit){
+        _limit = limit;
+        std::cout << "[AI] Blob init done\ns";
+    }
+    Blob(){}
+    
+    void set_pos(int x0, int y0){
+        x=x0;
+        y=y0;
+    }
+};
+
+#define ENEMY_PENALTY -300
+#define FOOD_REWARD 1000
+
 class EnvBlob: public Env {
     public:
     int _limit;
     int _step_counter;
+    int _action_space = 4;
+    int _obs_size;
+    int _grid_size;
+
+    Blob _player;
+    Blob _food;
+    Blob _enemy;
+
     EnvBlob(int limit){
         // TODO: color
         _limit = limit;
+        _obs_size = 3;
+        _grid_size = 10;
+
+        _player = Blob(_grid_size);
+        _food = Blob(_grid_size);
+        _enemy = Blob(_grid_size);
     }
 
     void reset(void){ 
@@ -77,7 +117,11 @@ class EnvBlob: public Env {
     }
 
     void render(void){
-        
+        std::cout << "------------\n";
+        std::cout << _player.x << ' ' << _player.y << '\n';
+        std::cout << _food.x << ' ' << _food.y << '\n';
+        std::cout << _enemy.x << ' ' << _enemy.y << '\n';
+
     }
 };
 

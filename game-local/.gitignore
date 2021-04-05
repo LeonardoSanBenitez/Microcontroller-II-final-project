@@ -1,3 +1,4 @@
 *.pickle
+*.swp
 build/
 main
