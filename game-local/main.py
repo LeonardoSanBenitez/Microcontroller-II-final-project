@@ -16,9 +16,9 @@ start_q_table = None #'model-1616452736.pickle' #None # None or Filename
 EPSILON = 0.9
 
 # Config deploy
-start_q_table = 'model.pickle' #None #'model-1616452736.pickle' #None # None or Filename
-EPSILON = 0
-SHOW_EVERY = 1
+#start_q_table = 'model.pickle' #None #'model-1616452736.pickle' #None # None or Filename
+#EPSILON = 0
+#SHOW_EVERY = 1
 
 
 class IntelligentAgent():
@@ -145,8 +145,8 @@ class EnvBlob(Env):
     obs_size = None
     grid_size = None
 
-    ENEMY_PENALTY = -300
-    FOOD_REWARD = 1000
+    ENEMY_PENALTY = -100
+    FOOD_REWARD = 300
 
     def __init__(self, obs_size:int = 3, grid_size:int = 10):
         self.obs_size = obs_size
@@ -215,10 +215,10 @@ class EnvBlob(Env):
         elif distance_food[0]==0 and distance_food[1]==0:
             # exactly on the food
             reward = self.FOOD_REWARD
-        elif (distance_enemy[0]**2 + distance_enemy[1]**2)<3:
-            # Near enemy
-            reward = int(self.ENEMY_PENALTY/2)
-        elif (distance_food[0]**2 + distance_food[1]**2)<5:
+        #elif (distance_enemy[0]**2 + distance_enemy[1]**2)<3:
+        #    # Near enemy
+        #    reward = int(self.ENEMY_PENALTY/2)
+        elif (distance_food[0]**2 + distance_food[1]**2)<3:
             # Near food
             reward = 0
         else:
