@@ -125,13 +125,13 @@ class EnvBlob{
             inits[3] = prng_LFSR()%_grid_size;
             if (inits[2]!=inits[0] || inits[3]!=inits[1])
                 break;
-	}
+	    }
         while (1){
             inits[4] = prng_LFSR()%_grid_size;
             inits[5] = prng_LFSR()%_grid_size;
             if ((inits[4]!=inits[0] || inits[5]!=inits[1]) && (inits[4]!=inits[2] || inits[5]!=inits[3]))
                 break;
-	}
+	    }
 	
         // Reset the agents
         _player.set_pos(inits[0], inits[1]);
@@ -140,7 +140,7 @@ class EnvBlob{
         _step_counter = 0;
         _done = 0;
         
- 	// Impossible game check
+ 	    // Impossible game check
        assert(_player.x != _enemy.x or _player.y != _enemy.y);
        assert(_player.x != _food.x or _player.y != _food.y);
        assert(_enemy.x != _food.x or _enemy.y != _food.y);
@@ -168,6 +168,8 @@ class EnvBlob{
     }
 
     Step step(int action){
+        Step s = Step(); //TODO: quando esse memória é desalocada?
+
         // Game mechanics
         if (action == 0)
             _player.move(1, 0);
@@ -181,38 +183,33 @@ class EnvBlob{
             throw std::logic_error("Invalid action");
 
         // Reward function
-        //int distance_enemy = _player - _enemy
-        /*int distance_food = _player - _food
-        if distance_enemy[0]==0 and distance_enemy[1]==0:
-            // exactly on the enemy
-            reward = self.ENEMY_PENALTY
-        elif distance_food[0]==0 and distance_food[1]==0:
-            // exactly on the food
-            reward = self.FOOD_REWARD
-        elif (distance_enemy[0]**2 + distance_enemy[1]**2)<3:
-            // Near enemy
-            reward = int(self.ENEMY_PENALTY/2)
-        elif (distance_food[0]**2 + distance_food[1]**2)<5:
-            // Near food
-            reward = 0
-        else:
-        #    # Near food
-            reward = -1*/
+        int dfx = _player.x - _food.x;
+        int dfy = _player.y - _food.y;
+        int dex = _player.x - _enemy.x;
+        int dey = _player.y - _enemy.y;
+        if (dex==0 && dey==0) // exactly on the enemy
+            s.reward = ENEMY_PENALTY;
+        else if (dfx==0 && dfy==0) // exactly on the food
+            s.reward = FOOD_REWARD;
+        else if ((dfx*dfx + dfy*dfy)<3) // Near food //TODO: overflow?
+            s.reward = 0;
+        else
+            s.reward = -1;
 
 
 
 
 
 
-        EnvBlobObs o = EnvBlobObs();
+        EnvBlobObs o = EnvBlobObs(); //TODO: quando esse memória é desalocada?
         o.dfx = 0;
         o.dfy = 0;
         o.dex = 0;
         o.dey = 0;
 
-        Step s = Step();
+        
         s.new_obs = o;
-        s.reward = 10*_step_counter;
+        //s.reward = 10*_step_counter;
         s.info = 0;
          
         _step_counter += 1;

@@ -222,7 +222,6 @@ class EnvBlob(Env):
             # Near food
             reward = 0
         else:
-        #    # Near food
             reward = -1
         #    reward = int(-0.1*self.FOOD_REWARD + 0.1*self.FOOD_REWARD/(distance_food[0]**2 + distance_food[1]**2))
 

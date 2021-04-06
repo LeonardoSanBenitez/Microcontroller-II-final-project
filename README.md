@@ -78,14 +78,14 @@ on ep. 27000, mean reward is -4.25 (epsilon is 0.004)
 
 
 
-## SIZE = 8, GRID_SIZE = , 30k episodes, 
+## SIZE = 3, GRID_SIZE = 10, 30k episodes, reward  Near food
 on ep. 0, mean reward is nan (epsilon is 0.900)
-on ep. 3000, mean reward is 283.38 (epsilon is 0.775)
-on ep. 6000, mean reward is 601.37 (epsilon is 0.667)
-on ep. 9000, mean reward is 724.75 (epsilon is 0.574)
-on ep. 12000, mean reward is 792.05 (epsilon is 0.494)
-on ep. 15000, mean reward is 836.25 (epsilon is 0.425)
-on ep. 18000, mean reward is 879.22 (epsilon is 0.366)
-on ep. 21000, mean reward is 882.49 (epsilon is 0.315)
-on ep. 24000, mean reward is 907.04 (epsilon is 0.271)
-on ep. 27000, mean reward is 915.27 (epsilon is 0.233)
+on ep. 3000, mean reward is 123.05 (epsilon is 0.775)
+on ep. 6000, mean reward is 194.16 (epsilon is 0.667)
+on ep. 9000, mean reward is 223.99 (epsilon is 0.574)
+on ep. 12000, mean reward is 237.12 (epsilon is 0.494)
+on ep. 15000, mean reward is 252.09 (epsilon is 0.425)
+on ep. 18000, mean reward is 260.69 (epsilon is 0.366)
+on ep. 21000, mean reward is 266.70 (epsilon is 0.315)
+on ep. 24000, mean reward is 269.16 (epsilon is 0.271)
+on ep. 27000, mean reward is 276.57 (epsilon is 0.233)
