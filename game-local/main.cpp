@@ -1,34 +1,35 @@
 /* g++ main.cpp -o main `pkg-config --cflags --libs opencv` && main*/
 /* cmake ../ && make && ./main */
-#include <opencv2/imgproc.hpp>
 
+//#include <opencv2/imgproc.hpp>
 #include <iostream>
 #include <assert.h> //to disable, #define NDEBUG 
 
 #include "model.h"
+#include "game_config.h"
 #include "PRNG_LFSR.h"
 
-#define DEPLOYED 0
 
-#define SIZE 10
-#define GRID_SIZE 10
-#define HM_EPISODES 10
-
-#ifndef DEPLOYED
-	#define LOAD_Q_TABLE 0
-	#define EPSILON 0.9
-	#define SHOW_EVERY 1
-	#define LOG_EVERY 1
-#else
-	#define LOAD_Q_TABLE 1
-	#define EPSILON  0
-	#define SHOW_EVERY 1
-	#define LOG_EVERY 1
-#endif
- 
-
-
-
+int max (int* arr, int len){
+    int maxval = -999; //TODO: proper -inf
+    for (int i=0; i<len; i++){
+        if (arr[i] > maxval){
+            maxval = arr[i];
+        }
+    }
+    return maxval
+}
+int argmax (int* arr, int len){
+    int maxidx = 0;
+    int maxval = -999; //TODO: proper -inf
+    for (int i=0; i<len; i++){
+        if (arr[i] > maxval){
+            maxidx = i;
+            maxval = arr[i];
+        }
+    }
+    return maxidx;
+}
 
 
 class EnvBlobObs{
@@ -47,88 +48,63 @@ class Step {
     int info;
 };
 
-
-
-
-
-
 class Blob{
     public:
     int x;
     int y;
-    int _limit;
-    //TODO: color... what class?
-
-    Blob(int limit){
-        _limit = limit;
-        std::cout << "[AI] Blob init done\n";
-    }
-    Blob(){}
     
     void set_pos(int x0, int y0){
         x=x0;
         y=y0;
     }
     
-    //TODO: overload subtraction?
     void move(int dx, int dy){
         x += dx;
         y += dy;
 
         // Wrap border
-        if (x >= _limit)
+        if (x >= GRID_SIZE)
             x = 0;
         if (x<0)
-            x = _limit - 1;
-        if (y >= _limit)
+            x = GRID_SIZE - 1;
+        if (y >= GRID_SIZE)
             y = 0;
         if (y<0)
-            y = _limit - 1;
+            y = GRID_SIZE - 1;
     }
 
 };
 
-#define ENEMY_PENALTY -300
-#define FOOD_REWARD 1000
-
 class EnvBlob{
     public:
-    int _limit;
     int _step_counter;
-    int _action_space = 4;
-    int _obs_size;
-    int _grid_size;
     int _done;
 
     Blob _player;
     Blob _food;
     Blob _enemy;
 
-    EnvBlob(int limit){
+    EnvBlob(){
         // TODO: color
-        _limit = limit;
-        _obs_size = 3;
-        _grid_size = 10;
-
-        _player = Blob(_grid_size);
-        _food = Blob(_grid_size);
-        _enemy = Blob(_grid_size);
+        _player = Blob();
+        _food = Blob();
+        _enemy = Blob();
     }
 
     void reset(void){ 
         // Generate unique tuples
         int inits[6] = {0,0,0,0,0,0};
-        inits[0] = prng_LFSR()%_grid_size;
-        inits[1] = prng_LFSR()%_grid_size;
+        inits[0] = prng_LFSR()%GRID_SIZE;
+        inits[1] = prng_LFSR()%GRID_SIZE;
         while (1){
-            inits[2] = prng_LFSR()%_grid_size;
-            inits[3] = prng_LFSR()%_grid_size;
+            inits[2] = prng_LFSR()%GRID_SIZE;
+            inits[3] = prng_LFSR()%GRID_SIZE;
             if (inits[2]!=inits[0] || inits[3]!=inits[1])
                 break;
 	    }
         while (1){
-            inits[4] = prng_LFSR()%_grid_size;
-            inits[5] = prng_LFSR()%_grid_size;
+            inits[4] = prng_LFSR()%GRID_SIZE;
+            inits[5] = prng_LFSR()%GRID_SIZE;
             if ((inits[4]!=inits[0] || inits[5]!=inits[1]) && (inits[4]!=inits[2] || inits[5]!=inits[3]))
                 break;
 	    }
@@ -157,7 +133,7 @@ class EnvBlob{
     
     // @Brief: convert the env internal representation to what is actually shown to the agent
     int _preprocess_obs(int obs){
-        int max_obs = _obs_size -1;
+        int max_obs = OBS_SIZE -1;
         if (obs>max_obs)
             obs = max_obs;   // Saturation
         if (obs<-max_obs)
@@ -196,11 +172,6 @@ class EnvBlob{
         else
             s.reward = -1;
 
-
-
-
-
-
         EnvBlobObs o = EnvBlobObs(); //TODO: quando esse memória é desalocada?
         o.dfx = 0;
         o.dfy = 0;
@@ -209,40 +180,87 @@ class EnvBlob{
 
         
         s.new_obs = o;
-        //s.reward = 10*_step_counter;
         s.info = 0;
          
         _step_counter += 1;
-        if (_step_counter>=5){s.done=1;} else {s.done=0;}
+        if (_step_counter>=199 || s.reward==FOOD_REWARD  || s.reward==ENEMY_PENALTY)
+            s.done=1;
+        else
+            s.done=0;
         return s;
     }
 
     void render(void){
-        std::cout << "------------\n";
-        std::cout << _player.x << ' ' << _player.y << '\n';
-        std::cout << _food.x << ' ' << _food.y << '\n';
-        std::cout << _enemy.x << ' ' << _enemy.y << '\n';
-
+        //std::cout << "------------\n";
+        //std::cout << _player.x << ' ' << _player.y << '\n';
+        //std::cout << _food.x << ' ' << _food.y << '\n';
+        //std::cout << _enemy.x << ' ' << _enemy.y << '\n';
     }
 };
 
-
 class IntelligentAgent{
+    int _epsilon; //percentual, de 0 a 100
+    int _q_table[OBS_RANGE][OBS_RANGE][OBS_RANGE][OBS_RANGE][ACTION_SPACE];
     public:
+        IntelligentAgent(){
+            _epsilon = INITIAL_EPSILON;
+
+            #ifdef LOAD_Q_TABLE
+                //TODO: load q_table from .h file
+            #else
+                for (int a=0; a<OBS_RANGE; a++){
+                    for (int b=0; b<OBS_RANGE; b++){
+                        for (int c=0; c<OBS_RANGE; c++){
+                            for (int d=0; d<OBS_RANGE; d++){
+                                for (int e=0; e<ACTION_SPACE; e++){
+                                    _q_table[a][b][c][d][e] =  prng_LFSR()%6 - 5;
+                                }
+                            }
+                        }
+                    }
+                }
+            #endif
+
+            std::cout << "[AI] Init done\n";
+        }
+
         int action(EnvBlobObs* obs){
-            return prng_LFSR()%4;
+            int action;
+            if (prng_LFSR()%100 > _epsilon)
+                action = argmax(&_q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][0], ACTION_SPACE);
+            else
+                action = prng_LFSR()%ACTION_SPACE;
+
+            return action;
         }
         void feedback(EnvBlobObs obs, EnvBlobObs new_obs, int action, int reward){
-            std::cout << "[AI] Great feedback, thanks\n";
+            float max_future_q = (float) max(&_q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][0], ACTION_SPACE);
+            float current_q = (float) _q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][action];
+            int new_q = (int) ((1 - LEARNING_RATE)*current_q + LEARNING_RATE*((float)reward+DISCOUNT*max_future_q));
+            _q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][action] = new_q
+
+
+
+            //std::cout << "[AI] Great feedback, thanks\n";
         }
-        void episode_callback(void){}
+        int to_disk(void){
+            return 0; //TODO
+        }
+        int from_disk(void){
+            return 0; //TODO
+        }
+        void episode_callback(void){
+            _epsilon *= EPS_DECAY;
+        }
 };
+
+
 
 
 
 int main(){
     init_LFSR(666);
-    EnvBlob env = EnvBlob(SIZE); 
+    EnvBlob env = EnvBlob(); 
     IntelligentAgent agent1 = IntelligentAgent();
     int episode_rewards[HM_EPISODES];
     
@@ -273,21 +291,11 @@ int main(){
         // After the episode is done
         if (episode%LOG_EVERY==0){
             std::cout << "end of ep " << episode << ", reward: " << episode_reward << '\n';
+            //break;
         }
         episode_rewards[episode] = episode_reward;
         agent1.episode_callback();
         
     }
-
-
-
-    /*
-    for (int i=0; i<LEN; i++){
-        for (int j=0; j<LEN; j++){
-            //std::cout << "HI" << q_table[i][j] << "\n";
-            std::cout << a.action(i+j) << ' ';
-        }
-    }*/
-
-
+    //TODO: ifndef DEPLOY, save the table to the .h file
 }
