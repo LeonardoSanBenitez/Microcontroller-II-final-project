@@ -58,7 +58,7 @@ class IntelligentAgent():
         return action
 
     def feedback(self, obs, new_obs, action, reward):
-        max_future_q = np.max(self.q_table[obs[0], obs[1], obs[2], obs[3], :])
+        max_future_q = np.max(self.q_table[new_obs[0], new_obs[1], new_obs[2], new_obs[3], :])
         current_q = self.q_table[obs[0], obs[1], obs[2], obs[3], action]
 
         new_q = (1 - self.LEARNING_RATE) * current_q + self.LEARNING_RATE * (reward + self.DISCOUNT * max_future_q)

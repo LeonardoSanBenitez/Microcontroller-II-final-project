@@ -89,3 +89,52 @@ on ep. 18000, mean reward is 260.69 (epsilon is 0.366)
 on ep. 21000, mean reward is 266.70 (epsilon is 0.315)
 on ep. 24000, mean reward is 269.16 (epsilon is 0.271)
 on ep. 27000, mean reward is 276.57 (epsilon is 0.233)
+
+## Same as beore but correcting new_obs
+on ep. 0, mean reward is nan (epsilon is 0.900)
+on ep. 3000, mean reward is 136.09 (epsilon is 0.775)
+on ep. 6000, mean reward is 188.19 (epsilon is 0.667)
+on ep. 9000, mean reward is 216.11 (epsilon is 0.574)
+on ep. 12000, mean reward is 241.12 (epsilon is 0.494)
+on ep. 15000, mean reward is 250.25 (epsilon is 0.425)
+on ep. 18000, mean reward is 256.99 (epsilon is 0.366)
+on ep. 21000, mean reward is 263.25 (epsilon is 0.315)
+on ep. 24000, mean reward is 264.99 (epsilon is 0.271)
+on ep. 27000, mean reward is 269.56 (epsilon is 0.233)
+(ifscMCC) benitez@benitez-Aspire-A515-51:~/Desktop/Microcontroller-II-final-project/game-local$ git add -A
+(ifscMCC) benitez@benitez-Aspire-A515-51:~/Desktop/Microcontroller-II-final-project/game-local$ git commit -m 'implementing action'
+[main cd3ab24] implementing action
+ 2 files changed, 126 insertions(+), 90 deletions(-)
+ create mode 100644 game-local/game_config.h
+(ifscMCC) benitez@benitez-Aspire-A515-51:~/Desktop/Microcontroller-II-final-project/game-local$ python main.py 
+[AI] Init object with Q table size of 2500 elements
+/home/benitez/anaconda3/envs/ifscMCC/lib/python3.6/site-packages/numpy/core/fromnumeric.py:3335: RuntimeWarning: Mean of empty slice.
+  out=out, **kwargs)
+/home/benitez/anaconda3/envs/ifscMCC/lib/python3.6/site-packages/numpy/core/_methods.py:161: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+on ep. 0, mean reward is nan (epsilon is 0.900)
+on ep. 3000, mean reward is 144.75 (epsilon is 0.775)
+on ep. 6000, mean reward is 203.69 (epsilon is 0.667)
+on ep. 9000, mean reward is 235.79 (epsilon is 0.574)
+on ep. 12000, mean reward is 253.45 (epsilon is 0.494)
+on ep. 15000, mean reward is 260.59 (epsilon is 0.425)
+on ep. 18000, mean reward is 270.65 (epsilon is 0.366)
+on ep. 21000, mean reward is 274.36 (epsilon is 0.315)
+on ep. 24000, mean reward is 280.52 (epsilon is 0.271)
+on ep. 27000, mean reward is 280.39 (epsilon is 0.233)
+(ifscMCC) benitez@benitez-Aspire-A515-51:~/Desktop/Microcontroller-II-final-project/game-local$ python main.py 
+[AI] Init object with Q table size of 2500 elements
+/home/benitez/anaconda3/envs/ifscMCC/lib/python3.6/site-packages/numpy/core/fromnumeric.py:3335: RuntimeWarning: Mean of empty slice.
+  out=out, **kwargs)
+/home/benitez/anaconda3/envs/ifscMCC/lib/python3.6/site-packages/numpy/core/_methods.py:161: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+on ep. 0, mean reward is nan (epsilon is 0.900)
+on ep. 3000, mean reward is 144.39 (epsilon is 0.775)
+on ep. 6000, mean reward is 208.71 (epsilon is 0.667)
+on ep. 9000, mean reward is 236.41 (epsilon is 0.574)
+on ep. 12000, mean reward is 252.80 (epsilon is 0.494)
+on ep. 15000, mean reward is 264.07 (epsilon is 0.425)
+on ep. 18000, mean reward is 269.98 (epsilon is 0.366)
+on ep. 21000, mean reward is 274.00 (epsilon is 0.315)
+on ep. 24000, mean reward is 278.05 (epsilon is 0.271)
+on ep. 27000, mean reward is 279.49 (epsilon is 0.233)
