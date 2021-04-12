@@ -17,7 +17,7 @@ int max (int* arr, int len){
             maxval = arr[i];
         }
     }
-    return maxval
+    return maxval;
 }
 int argmax (int* arr, int len){
     int maxidx = 0;
@@ -233,11 +233,11 @@ class IntelligentAgent{
 
             return action;
         }
-        void feedback(EnvBlobObs obs, EnvBlobObs new_obs, int action, int reward){
-            float max_future_q = (float) max(&_q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][0], ACTION_SPACE);
+        void feedback(EnvBlobObs* obs, EnvBlobObs* new_obs, int action, int reward){
+            float max_future_q = (float) max(&_q_table[new_obs->dfx][new_obs->dfy][new_obs->dex][new_obs->dey][0], ACTION_SPACE);
             float current_q = (float) _q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][action];
             int new_q = (int) ((1 - LEARNING_RATE)*current_q + LEARNING_RATE*((float)reward+DISCOUNT*max_future_q));
-            _q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][action] = new_q
+            _q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][action] = new_q;
 
 
 
@@ -280,7 +280,7 @@ int main(){
 
             // Avance the game
             Step step = env.step(action);
-            agent1.feedback(obs, step.new_obs, action, step.reward);
+            agent1.feedback(&obs, &step.new_obs, action, step.reward);
             episode_reward += step.reward;
             done=step.done;
             if (episode%SHOW_EVERY==0 && episode!=0){
