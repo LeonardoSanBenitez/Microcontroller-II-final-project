@@ -1,0 +1,20 @@
+nokia.cpp:126:6:void cmd_LCD(uint32_t)	24	static
+nokia.cpp:147:6:void data_LCD(uint32_t)	24	static
+nokia.cpp:168:6:void inic_LCD()	8	static
+nokia.cpp:184:6:void goto_XY(uint32_t, uint32_t)	0	static
+nokia.cpp:192:6:void escreve2fb(unsigned char*)	0	static
+nokia.cpp:200:6:void imprime_LCD()	16	static
+nokia.cpp:212:6:void caractere_LCD(char)	20	static
+nokia.cpp:228:6:void string_LCD(char*)	8	static
+nokia.cpp:234:6:void string_LCD_Nr(char*, uint32_t, uint32_t)	40	static
+nokia.cpp:266:6:void limpa_LCD()	0	static
+nokia.cpp:276:6:void desenha_pixel(uint32_t, uint32_t, uint32_t)	12	static
+nokia.cpp:296:6:void desenha_linha(pontos_t*, uint32_t)	48	static
+nokia.cpp:375:6:void desenha_circulo(int32_t, int32_t, int32_t, uint32_t)	48	static
+nokia.cpp:426:6:void desenha_retangulo(pontos_t*, uint32_t)	40	static
+nokia.cpp:474:6:void desenha_triangulo(pontos_t*, uint32_t)	40	static
+nokia.cpp:521:6:void desenha_fig(pontos_t*, const figura_t*)	56	static
+nokia.cpp:590:6:void escreve_Nr_Peq(uint32_t, uint32_t, int32_t, uint32_t)	64	static
+nokia.cpp:644:6:void print_food(uint32_t, uint32_t)	0	static
+nokia.cpp:651:6:void print_AI(uint32_t, uint32_t)	32	static
+nokia.cpp:663:6:void print_monster(uint32_t, uint32_t)	56	static
