@@ -1,0 +1,18 @@
+!SESSION 2021-04-14 03:52:36.482 -----------------------------------------------
+eclipse.buildId=Version 1.4.0
+java.version=1.8.0_252
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=pt_BR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data C:\Users\jeffe\Documents\GitHub\Microcontroller-II-final-project\game-local
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2021-04-14 03:52:46.717
+!MESSAGE Log4j initialized with config file C:\Users\jeffe\Documents\GitHub\Microcontroller-II-final-project\game-local\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2021-04-14 03:52:49.633
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 4 4 2021-04-14 03:52:50.633
+!MESSAGE com.st.stm32cube.ide.mcu.ide/META-INF/version/build_ref file not found, build reference will not be reported into properties
+
+!ENTRY org.eclipse.cdt.core 1 0 2021-04-14 03:54:35.992
+!MESSAGE Indexed 'FreeRTOS_LC5110_Joystick' (31 sources, 213 headers) in 9,01 sec: 16.035 declarations; 47.018 references; 0 unresolved inclusions; 76 syntax errors; 872 unresolved names (1,4%)
