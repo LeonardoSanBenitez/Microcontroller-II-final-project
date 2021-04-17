@@ -256,8 +256,9 @@ class EnvBlob(Env):
 
 env = EnvBlob(obs_size=SIZE, grid_size=GRID_SIZE)
 AI = IntelligentAgent(start_q_table=start_q_table, obs_size=env.obs_size, epsilon=EPSILON)
-
 episode_rewards = []
+
+# Repeat for several episodes
 for episode in range(HM_EPISODES):
     env.reset()
 
@@ -268,12 +269,12 @@ for episode in range(HM_EPISODES):
     episode_reward = 0
     done = False
 
-    # Play the game within episode
+    # Play the episode
     while not done:
         obs = env.observation()
 
         # Take the action!
-        action = AI.action(obs)
+        action = AI.action(     )
         #enemy.action() ??
 
         new_obs, reward, done, info = env.step(action)
