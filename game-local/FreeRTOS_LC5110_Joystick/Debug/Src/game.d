@@ -41,7 +41,7 @@ Src/game.o: ../Src/game.cpp ../Inc/game.hpp ../Inc/PRNG_LFSR.hpp \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../Inc/atrasoC.h ../Inc/defPrincipais.h ../Inc/game_config.h \
- ../Inc/app.hpp ../Inc/nokia.hpp ../Inc/defPrincipais.h ../Inc/atraso.h
+ ../Inc/nokia.hpp ../Inc/defPrincipais.h ../Inc/atraso.h
 
 ../Inc/game.hpp:
 
@@ -138,8 +138,6 @@ Src/game.o: ../Src/game.cpp ../Inc/game.hpp ../Inc/PRNG_LFSR.hpp \
 ../Inc/defPrincipais.h:
 
 ../Inc/game_config.h:
-
-../Inc/app.hpp:
 
 ../Inc/nokia.hpp:
 
