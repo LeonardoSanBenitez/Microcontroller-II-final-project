@@ -1,4 +1,4 @@
-Src/nokia.o: ../Src/nokia.cpp ../Inc/nokia.h \
+Src/nokia.o: ../Src/nokia.cpp ../Inc/nokia.hpp \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Inc/stm32f1xx_hal_conf.h ../Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -25,7 +25,7 @@ Src/nokia.o: ../Src/nokia.cpp ../Inc/nokia.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Inc/defPrincipais.h ../Inc/atraso.h
 
-../Inc/nokia.h:
+../Inc/nokia.hpp:
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 

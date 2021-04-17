@@ -16,5 +16,5 @@ nokia.cpp:474:6:void desenha_triangulo(pontos_t*, uint32_t)	40	static
 nokia.cpp:521:6:void desenha_fig(pontos_t*, const figura_t*)	56	static
 nokia.cpp:590:6:void escreve_Nr_Peq(uint32_t, uint32_t, int32_t, uint32_t)	64	static
 nokia.cpp:644:6:void print_food(uint32_t, uint32_t)	0	static
-nokia.cpp:651:6:void print_AI(uint32_t, uint32_t)	32	static
-nokia.cpp:663:6:void print_monster(uint32_t, uint32_t)	56	static
+nokia.cpp:651:6:void print_AI(uint32_t, uint32_t)	40	static
+nokia.cpp:669:6:void print_monster(uint32_t, uint32_t)	56	static

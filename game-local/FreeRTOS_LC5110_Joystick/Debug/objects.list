@@ -21,6 +21,8 @@
 "Middlewares/Third_Party/FreeRTOS/Source/timers.o"
 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.o"
 "Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.o"
+"Src/PRNG_LFSR.o"
+"Src/app.o"
 "Src/atrasoC.o"
 "Src/freertos.o"
 "Src/game.o"

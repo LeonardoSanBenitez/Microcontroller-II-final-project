@@ -1,5 +1,5 @@
-Src/game.o: ../Src/game.cpp ../Inc/main.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
+Src/game.o: ../Src/game.cpp ../Inc/game.hpp ../Inc/PRNG_LFSR.hpp \
+ ../Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Inc/stm32f1xx_hal_conf.h ../Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
@@ -40,9 +40,12 @@ Src/game.o: ../Src/game.cpp ../Inc/main.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
- ../Inc/atrasoC.h ../Inc/defPrincipais.h ../Inc/nokia.h \
- ../Inc/defPrincipais.h ../Inc/atraso.h ../Inc/figuras.h \
- ../Inc/PRNG_LFSR.h ../Inc/game_config.h
+ ../Inc/atrasoC.h ../Inc/defPrincipais.h ../Inc/game_config.h \
+ ../Inc/app.hpp ../Inc/nokia.hpp ../Inc/defPrincipais.h ../Inc/atraso.h
+
+../Inc/game.hpp:
+
+../Inc/PRNG_LFSR.hpp:
 
 ../Inc/main.h:
 
@@ -134,14 +137,12 @@ Src/game.o: ../Src/game.cpp ../Inc/main.h \
 
 ../Inc/defPrincipais.h:
 
-../Inc/nokia.h:
+../Inc/game_config.h:
+
+../Inc/app.hpp:
+
+../Inc/nokia.hpp:
 
 ../Inc/defPrincipais.h:
 
 ../Inc/atraso.h:
-
-../Inc/figuras.h:
-
-../Inc/PRNG_LFSR.h:
-
-../Inc/game_config.h:

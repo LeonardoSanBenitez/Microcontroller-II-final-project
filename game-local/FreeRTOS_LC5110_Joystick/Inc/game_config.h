@@ -1,7 +1,7 @@
 #define SIZE 3
 #define OBS_RANGE OBS_SIZE*2 -1
 #define OBS_SIZE 3
-#define GRID_SIZE 10
+#define GRID_SIZE 20
 #define HM_EPISODES 30000
 //#define DEPLOYED
 

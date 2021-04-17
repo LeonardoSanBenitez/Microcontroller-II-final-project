@@ -10,6 +10,8 @@
 
 
 int app();
+void game_init();
+void move_enemy(int action);
 
 
 #endif /* APP_HPP_ */
