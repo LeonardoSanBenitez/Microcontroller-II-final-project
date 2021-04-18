@@ -7,18 +7,18 @@ from matplotlib import style
 import time
 
 # Config train
-SIZE = 3
+SIZE = 10
 GRID_SIZE = 10
-HM_EPISODES = 30000
+HM_EPISODES = 50000
 LOG_EVERY = 3000  
-SHOW_EVERY = 500000 # how often to play through env visually.
-start_q_table = None #'model-1616452736.pickle' #None # None or Filename
+SHOW_EVERY = HM_EPISODES+1 # how often to play through env visually.
+start_q_table = None 
 EPSILON = 0.9
 
 # Config deploy
-#start_q_table = 'model.pickle' #None #'model-1616452736.pickle' #None # None or Filename
-#EPSILON = 0
-#SHOW_EVERY = 1
+start_q_table = 'model.pickle'
+EPSILON = 0
+SHOW_EVERY = 1
 
 
 class IntelligentAgent():
@@ -274,7 +274,7 @@ for episode in range(HM_EPISODES):
         obs = env.observation()
 
         # Take the action!
-        action = AI.action(     )
+        action = AI.action(obs)
         #enemy.action() ??
 
         new_obs, reward, done, info = env.step(action)

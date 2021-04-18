@@ -294,7 +294,7 @@ int main(){
     IntelligentAgent agent1 = IntelligentAgent();
     //int episode_rewards[HM_EPISODES];
     
-    for (int episode=0; episode<HM_EPISODES; episode++){
+    for (long episode=0; episode<HM_EPISODES; episode++){
         int episode_reward = 0;
         int done = 0;
         env.reset();
