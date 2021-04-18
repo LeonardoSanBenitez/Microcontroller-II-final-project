@@ -8,11 +8,12 @@ from matplotlib import style
 import time
 
 SIZE = 8
-HM_EPISODES = 41000
+HM_EPISODES = 300000
 LOG_EVERY = 3000  # how often to play through env visually.
-SHOW_EVERY = 10000
-start_q_table = None # None or 'model.pickle'
+SHOW_EVERY = 400000
+start_q_table = None # None or Filename
 EPSILON = 0.9
+
 
 # Config deploy
 start_q_table = 'model.pickle'
@@ -27,8 +28,8 @@ class IntelligentAgent():
     epsilon = 0.9
     EPS_DECAY = 0.9998
 
-    def __init__(self, start_q_table, epsilon:float=None):
-        if epsilon: self.epsilon = epsilon
+    def __init__(self, start_q_table, epsilon:float):
+        self.epsilon = epsilon
         if start_q_table is None:
             self.q_table = {}
             for i in range(-SIZE+1, SIZE):
