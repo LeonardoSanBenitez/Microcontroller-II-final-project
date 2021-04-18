@@ -69,7 +69,7 @@ void vTask_Nr_Print(void *pvParameters)
 	scenery.x2 = 83;
 	scenery.y2 = 47;
 
-	//desenha_retangulo(&scenery,1);
+	desenha_retangulo(&scenery,1);
 
 	while(1)
 	{

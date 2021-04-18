@@ -3,7 +3,7 @@ PRNG_LFSR.h:12:6:void init_LFSR(long unsigned int)	0	static
 PRNG_LFSR.h:21:16:long unsigned int prng_LFSR()	0	static
 game.cpp:61:6:void vTask_Nr_Print(void*)	8	static
 game.cpp:44:6:void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*)	0	static
-game.cpp:221:6:void SystemClock_Config()	96	static
-game.cpp:107:5:int main()	64	static
-game.cpp:402:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	0	static
-game.cpp:421:6:void _Error_Handler(char*, int)	0	static
+game.cpp:220:6:void SystemClock_Config()	96	static
+game.cpp:106:5:int main()	64	static
+game.cpp:401:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	0	static
+game.cpp:420:6:void _Error_Handler(char*, int)	0	static
