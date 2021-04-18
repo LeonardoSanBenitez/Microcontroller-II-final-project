@@ -1,3 +1,4 @@
+#define SIZE 3
 #define OBS_RANGE OBS_SIZE*2 -1
 #define OBS_SIZE 3
 #define GRID_SIZE 10
@@ -23,5 +24,5 @@
 #define DISCOUNT        0.2
 #define EPS_DECAY       0.99995
 
-#define ENEMY_PENALTY -100
-#define FOOD_REWARD 300
+#define ENEMY_PENALTY -300
+#define FOOD_REWARD 1000

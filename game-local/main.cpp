@@ -52,7 +52,6 @@ class Blob{
     public:
     int x;
     int y;
-    //TODO: color
     
     void set_pos(int x0, int y0){
         x=x0;
@@ -222,7 +221,7 @@ class IntelligentAgent{
                 }
             #endif
 
-            printf('[AI] Init object with Q table size of %d elements\n', OBS_RANGE*OBS_RANGE*OBS_RANGE*OBS_RANGE*ACTION_SPACE);
+            std::cout << "[AI] Init done\n";
         }
 
         int action(EnvBlobObs* obs){
@@ -239,6 +238,10 @@ class IntelligentAgent{
             float current_q = (float) _q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][action];
             int new_q = (int) ((1 - LEARNING_RATE)*current_q + LEARNING_RATE*((float)reward+DISCOUNT*max_future_q));
             _q_table[obs->dfx][obs->dfy][obs->dex][obs->dey][action] = new_q;
+
+
+
+            //std::cout << "[AI] Great feedback, thanks\n";
         }
         int to_disk(void){
             return 0; //TODO
@@ -261,13 +264,12 @@ int main(){
     IntelligentAgent agent1 = IntelligentAgent();
     int episode_rewards[HM_EPISODES];
     
-    // Repeat for several episodes
     for (int episode=0; episode<HM_EPISODES; episode++){
         int episode_reward = 0;
         int done = 0;
         env.reset();
 
-        // Play the episode
+        // Play the game within episode
         while (!done){
             EnvBlobObs obs = env.observation();
 
