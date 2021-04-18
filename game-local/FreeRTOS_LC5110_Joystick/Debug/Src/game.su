@@ -1,15 +1,16 @@
-game.cpp:396:6:void vTask_LCD_Print(void*)	8	static
+game.cpp:409:6:void vTask_LCD_Print(void*)	8	static
 game.cpp:49:5:int max(int*, int)	8	static
 game.cpp:58:5:int argmax(int*, int)	12	static
-game.cpp:97:10:void Blob::move(int, int)	8	static
-game.cpp:142:10:void EnvBlob::reset()	32	static
-game.cpp:371:6:void move_enemy(int)	0	static
-game.cpp:376:6:void game_init()	8	static
-game.cpp:342:5:int app()	72	static
-game.cpp:402:6:void vTask_Nr_Print(void*)	8	static
-game.cpp:385:6:void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*)	0	static
-game.cpp:559:6:void SystemClock_Config()	96	static
-game.cpp:442:5:int main()	64	static
-game.cpp:740:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	0	static
-game.cpp:759:6:void _Error_Handler(char*, int)	0	static
-game.cpp:767:1:cpp)	56	static
+game.cpp:97:10:void Blob::move(int, int)	0	static
+game.cpp:138:10:void EnvBlob::reset()	32	static
+game.cpp:252:10:void EnvBlob::render()	32	static
+game.cpp:369:6:void move_enemy(int)	0	static
+game.cpp:374:6:void game_init()	8	static
+game.cpp:340:5:int app()	48	static
+game.cpp:415:6:void vTask_Nr_Print(void*)	8	static
+game.cpp:398:6:void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*)	0	static
+game.cpp:570:6:void SystemClock_Config()	96	static
+game.cpp:453:5:int main()	64	static
+game.cpp:751:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	0	static
+game.cpp:770:6:void _Error_Handler(char*, int)	0	static
+game.cpp:778:1:cpp)	56	static

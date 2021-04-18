@@ -102,22 +102,18 @@ class Blob{
         if (x >= GRID_SIZE)
         {
         	 x = 0;
-        	 limpa_LCD();
         }
         if (x<0)
         {
             x = GRID_SIZE - 1;
-            limpa_LCD();
         }
         if (y >= GRID_SIZE)
         {
         	y = 0;
-        	limpa_LCD();
         }
         if (y<0)
         {
             y = GRID_SIZE - 1;
-            limpa_LCD();
         }
     }
 
@@ -259,6 +255,8 @@ class EnvBlob{
         //std::cout << _food.x << ' ' << _food.y << '\n';
         //std::cout << _enemy.x << ' ' << _enemy.y << '\n';
 
+    	limpa_LCD();
+
     	struct pontos_t scenery;
 
     	// limits scenery
@@ -269,9 +267,9 @@ class EnvBlob{
 
 		desenha_retangulo(&scenery,1);
 
-    	print_AI(_player.x,_player.y);
-    	print_food(_food.x,_food.y);
-    	print_monster(_enemy.x,_enemy.y);
+    	print_AI(_player.x*8,_player.y*8);
+    	print_food(_food.x*8,_food.y*8);
+    	print_monster(_enemy.x*8,_enemy.y*8);
 
     }
 };
@@ -375,7 +373,22 @@ void move_enemy(int action)
 
 void game_init()
 {
+	env.render();
+	HAL_Delay(500);
 	limpa_LCD();
+	HAL_Delay(100);
+	env.render();
+	HAL_Delay(500);
+	limpa_LCD();
+	HAL_Delay(100);
+	env.render();
+	HAL_Delay(500);
+	limpa_LCD();
+	HAL_Delay(100);
+	env.render();
+	HAL_Delay(500);
+	limpa_LCD();
+	HAL_Delay(100);
 	env.reset();
 	agent1.episode_callback();
 }
@@ -425,10 +438,8 @@ void vTask_Nr_Print(void *pvParameters)
 		{
 			env.step_enemy(1);
 		}
-
-		escreve_Nr_Peq(30,30,valor_ADC[0],0);
-		escreve_Nr_Peq(40,40,valor_ADC[1],0);
-		vTaskDelay(100);
+		escreve_Nr_Peq(65,2,episode_rewards,0);
+		vTaskDelay(250);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -492,7 +503,7 @@ int main(void)
 							// pode ser empregado o ADC lendo uma entrada flutuante para gerar a semente.
 	//}
 
-	init_LFSR(semente_PRNG);	// inicializacao para geracao de numeros pseudoaleatorios
+	init_LFSR(666);	// inicializacao para geracao de numeros pseudoaleatorios
 	//rand_prng = prng_LFSR();	// sempre q a funcao prng() for chamada um novo nr � gerado.
 
 	limpa_LCD();

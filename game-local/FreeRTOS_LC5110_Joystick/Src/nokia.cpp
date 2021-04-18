@@ -644,7 +644,7 @@ void escreve_Nr_Peq(uint32_t x, uint32_t y, int32_t valor, uint32_t quant2Print)
 void print_food (uint32_t x0, uint32_t y0)	// min x0 =  3; min y0 =  3
 											// max x0 = 80; max y0 = 44
 {
-	desenha_circulo(x0,y0,2,1);
+	desenha_circulo(x0+2,y0+2,2,1);
 }
 
 // @param x e y => coordenadas do primeiro ponto (superior esquerdo)
@@ -655,11 +655,6 @@ void print_AI (uint32_t x, uint32_t y)
 	struct pontos_t ai;
 	ai.x1 = x;
 	ai.y1 = y;
-	ai.x2 = x + 6;
-	ai.y2 = y + 6;
-	desenha_retangulo(&ai,2);
-	ai.x1 = x+2;
-	ai.y1 = y+2;
 	ai.x2 = x + 4;
 	ai.y2 = y + 4;
 

@@ -1,36 +1,39 @@
-20:47:01 **** Incremental Build of configuration Debug for project FreeRTOS_LC5110_Joystick ****
+16:41:04 **** Incremental Build of configuration Debug for project FreeRTOS_LC5110_Joystick ****
 make all 
 arm-none-eabi-g++ "../Src/game.cpp" -mcpu=cortex-m3 -std=gnu++14 -g3 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-threadsafe-statics -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Src/game.d" -MT"Src/game.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/game.o"
 ../Src/game.cpp: In member function 'int IntelligentAgent::action(EnvBlobObs*)':
-../Src/game.cpp:307:33: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../Src/game.cpp:305:33: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
              if (prng_LFSR()%100 > _epsilon)
                  ~~~~~~~~~~~~~~~~^~~~~~~~~~
 ../Src/game.cpp: In function 'int app()':
-../Src/game.cpp:369:1: warning: no return statement in function returning non-void [-Wreturn-type]
+../Src/game.cpp:367:1: warning: no return statement in function returning non-void [-Wreturn-type]
  }
  ^
 ../Src/game.cpp: In function 'int main()':
-../Src/game.cpp:486:28: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+../Src/game.cpp:497:28: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
   string_LCD("Press.  Botao");
                             ^
+../Src/game.cpp:457:16: warning: unused variable 'semente_PRNG' [-Wunused-variable]
+  unsigned long semente_PRNG=1;
+                ^~~~~~~~~~~~
 ../Src/game.cpp: In function 'void SystemClock_Config()':
-../Src/game.cpp:577:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+../Src/game.cpp:588:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
      _Error_Handler(__FILE__, __LINE__);
                                       ^
-../Src/game.cpp:591:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+../Src/game.cpp:602:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
      _Error_Handler(__FILE__, __LINE__);
                                       ^
-../Src/game.cpp:598:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+../Src/game.cpp:609:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
      _Error_Handler(__FILE__, __LINE__);
                                       ^
 ../Src/game.cpp: In function 'void MX_ADC1_Init()':
-../Src/game.cpp:630:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+../Src/game.cpp:641:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
      _Error_Handler(__FILE__, __LINE__);
                                       ^
-../Src/game.cpp:640:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+../Src/game.cpp:651:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
      _Error_Handler(__FILE__, __LINE__);
                                       ^
-../Src/game.cpp:649:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+../Src/game.cpp:660:38: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
      _Error_Handler(__FILE__, __LINE__);
                                       ^
 arm-none-eabi-g++ -o "FreeRTOS_LC5110_Joystick.elf" @"objects.list"   -mcpu=cortex-m3 -T"../STM32F103C8_FLASH.ld" --specs=nosys.specs -Wl,-Map="FreeRTOS_LC5110_Joystick.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
@@ -44,9 +47,9 @@ Finished building: FreeRTOS_LC5110_Joystick.bin
  
 arm-none-eabi-size   FreeRTOS_LC5110_Joystick.elf 
    text	   data	    bss	    dec	    hex	filename
-  19824	    124	  15736	  35684	   8b64	FreeRTOS_LC5110_Joystick.elf
+  19864	    124	  15736	  35724	   8b8c	FreeRTOS_LC5110_Joystick.elf
 Finished building: default.size.stdout
  
 
-20:47:04 Build Finished. 0 errors, 9 warnings. (took 3s.127ms)
+16:41:07 Build Finished. 0 errors, 10 warnings. (took 3s.198ms)
 
