@@ -18,6 +18,8 @@
 #include <nokia.hpp>
 #include <assert.h> //to disable, #define NDEBUG
 
+#include "model.h"
+
 
 /* USER CODE END Includes */
 
@@ -275,30 +277,32 @@ class EnvBlob{
 };
 
 class IntelligentAgent{
-    int _epsilon; //percentual, de 0 a 100
-    int _q_table[OBS_RANGE][OBS_RANGE][OBS_RANGE][OBS_RANGE][ACTION_SPACE];
-    public:
-        IntelligentAgent(){
-            _epsilon = INITIAL_EPSILON;
+	int _epsilon; //percentual, de 0 a 100
+	    #ifdef LOAD_Q_TABLE
+	        int _q_table[OBS_RANGE][OBS_RANGE][OBS_RANGE][OBS_RANGE][ACTION_SPACE] = TABLE;
+	    #else
+	        int _q_table[OBS_RANGE][OBS_RANGE][OBS_RANGE][OBS_RANGE][ACTION_SPACE];
+	    #endif
+	    public:
+	        IntelligentAgent(){
+	            _epsilon = INITIAL_EPSILON;
 
-            #ifdef LOAD_Q_TABLE
-                //TODO: load q_table from .h file
-            #else
-                for (int a=0; a<OBS_RANGE; a++){
-                    for (int b=0; b<OBS_RANGE; b++){
-                        for (int c=0; c<OBS_RANGE; c++){
-                            for (int d=0; d<OBS_RANGE; d++){
-                                for (int e=0; e<ACTION_SPACE; e++){
-                                    _q_table[a][b][c][d][e] =  prng_LFSR()%6 - 5;
-                                }
-                            }
-                        }
-                    }
-                }
-            #endif
+	            #ifndef LOAD_Q_TABLE
+	                for (int a=0; a<OBS_RANGE; a++){
+	                    for (int b=0; b<OBS_RANGE; b++){
+	                        for (int c=0; c<OBS_RANGE; c++){
+	                            for (int d=0; d<OBS_RANGE; d++){
+	                                for (int e=0; e<ACTION_SPACE; e++){
+	                                    _q_table[a][b][c][d][e] =  prng_LFSR()%6 - 5;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            #endif
 
-            //std::cout << "[AI] Init done\n";
-        }
+	            //std::cout << "[AI] Init done\n";
+	        }
 
         int action(EnvBlobObs* obs){
             int action;
@@ -412,7 +416,8 @@ void vTask_LCD_Print(void *pvParameters)
 }
 //---------------------------------------------------------------------------------------------------
 // Tarefa para imprimir um numero aleatorio
-void vTask_Nr_Print(void *pvParameters)
+//void vTask_Nr_Print(void *pvParameters)
+void vTask_Game_Print(void *pvParameters)
 {
 	//uint32_t rand_prng;
 
@@ -438,8 +443,10 @@ void vTask_Nr_Print(void *pvParameters)
 		{
 			env.step_enemy(1);
 		}
-		escreve_Nr_Peq(65,2,episode_rewards,0);
-		vTaskDelay(250);
+		escreve_Nr_Peq(65,16,episode_rewards,0);
+		goto_XY(48,1);
+		string_LCD("score");
+		vTaskDelay(400);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -495,23 +502,30 @@ int main(void)
 
 	goto_XY(0, 0);
 	string_LCD("Press.  Botao");
+	goto_XY(20,2);
+	string_LCD("AI");
+	goto_XY(20,3);
+	string_LCD("food");
+	goto_XY(20,4);
+	string_LCD("player");
+	print_AI(10,17);
+	print_food(10,25);
+	print_monster(10,38);
 	imprime_LCD();
 
-	//while(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15)) // enquando nao pressionar joystick fica travado
-	//{
-	//	semente_PRNG++;		// semente para o gerador de n�meros pseudoaleatorios
-							// pode ser empregado o ADC lendo uma entrada flutuante para gerar a semente.
-	//}
+	while(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15)) // enquando nao pressionar joystick fica travado
+	{
 
-	init_LFSR(666);	// inicializacao para geracao de numeros pseudoaleatorios
-	//rand_prng = prng_LFSR();	// sempre q a funcao prng() for chamada um novo nr � gerado.
+	}
 
-	limpa_LCD();
+	init_LFSR(666);	// inicializacao para posicoes aleatorias
+
+	//limpa_LCD();
 	//escreve2fb((unsigned char *)dragon);
-	imprime_LCD();
-	HAL_Delay(1000);
-	limpa_LCD();
-	imprime_LCD();
+	//imprime_LCD();
+	//HAL_Delay(1000);
+	//limpa_LCD();
+	//imprime_LCD();
 
 	/* USER CODE END 2 */
 
@@ -534,7 +548,7 @@ int main(void)
 
 	/* USER CODE BEGIN RTOS_THREADS */
 	xTaskCreate(vTask_LCD_Print, "Task 1", 100, NULL, 1,NULL);
-	xTaskCreate(vTask_Nr_Print, "Task 2", 100, NULL, 1,NULL);
+	xTaskCreate(vTask_Game_Print, "Task 2", 100, NULL, 1,NULL);
 	/* USER CODE END RTOS_THREADS */
 
 	/* USER CODE BEGIN RTOS_QUEUES */
