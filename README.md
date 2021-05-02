@@ -7,7 +7,7 @@ The AI agent (blue) aims to navigate its way as quickly as possible to the targe
 
 ![gif](demo_stm.gif)
 
-Everything was implemented in pure C++. An initial protopype was developed in Python (it's the first gif you see above), whose code was highly based on a tutorial from !(Python Programming)[https://pythonprogramming.net/q-learning-reinforcement-learning-python-tutorial/] [1].
+Everything was implemented in pure C++. An initial protopype was developed in Python (it's the first gif you see above), whose code was highly based on a tutorial from Python Programming [1].
 
 ## AI problem formulation
 The AI agent has partial knowledge about the environment: it knows the x and y deltas for the food and enemy, with precision depending on the distance. If the food or the enemy is far away, the agent only knows its general direction. The agent can execute 4 actions: move up, down, left or right. 
