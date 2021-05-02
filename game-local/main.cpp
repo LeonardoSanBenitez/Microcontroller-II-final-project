@@ -4,6 +4,7 @@
 //#include <opencv2/imgproc.hpp>
 #include <iostream>
 #include <assert.h> //to disable, #define NDEBUG 
+#include <fstream>
 
 #include "model.h"
 #include "game_config.h"
@@ -200,14 +201,16 @@ class EnvBlob{
 
 class IntelligentAgent{
     int _epsilon; //percentual, de 0 a 100
-    int _q_table[OBS_RANGE][OBS_RANGE][OBS_RANGE][OBS_RANGE][ACTION_SPACE];
+    #ifdef LOAD_Q_TABLE
+        int _q_table[OBS_RANGE][OBS_RANGE][OBS_RANGE][OBS_RANGE][ACTION_SPACE] = TABLE;
+    #else
+        int _q_table[OBS_RANGE][OBS_RANGE][OBS_RANGE][OBS_RANGE][ACTION_SPACE];
+    #endif
     public:
         IntelligentAgent(){
             _epsilon = INITIAL_EPSILON;
 
-            #ifdef LOAD_Q_TABLE
-                //TODO: load q_table from .h file
-            #else
+            #ifndef LOAD_Q_TABLE
                 for (int a=0; a<OBS_RANGE; a++){
                     for (int b=0; b<OBS_RANGE; b++){
                         for (int c=0; c<OBS_RANGE; c++){
@@ -243,11 +246,38 @@ class IntelligentAgent{
 
             //std::cout << "[AI] Great feedback, thanks\n";
         }
-        int to_disk(void){
-            return 0; //TODO
-        }
-        int from_disk(void){
-            return 0; //TODO
+        void to_disk(void){
+            std::ofstream file;
+            file.open("model.h");
+            file << "#ifndef MODEL\n#define MODEL\n\n#define TABLE ";
+            file << '{';
+            for (int a=0; a<OBS_RANGE; a++){
+                if (a>0) file << ", ";
+                file << '{';
+                for (int b=0; b<OBS_RANGE; b++){
+                    if (b>0) file << ", ";
+                    file << '{';
+                    for (int c=0; c<OBS_RANGE; c++){
+                        if (c>0) file << ", ";
+                        file << '{';
+                        for (int d=0; d<OBS_RANGE; d++){
+                            if (d>0) file << ", ";
+                            file << '{';
+                            for (int e=0; e<ACTION_SPACE; e++){
+                                if (e>0) file << ", ";
+                                file << _q_table[a][b][c][d][e];
+                            }
+                            file << '}';    
+                        }
+                        file << '}';
+                    }
+                    file << '}';
+                }
+                file << '}';
+            }
+            file << '}';
+            file << "\n\n#endif";
+            file.close();
         }
         void episode_callback(void){
             _epsilon *= EPS_DECAY;
@@ -262,9 +292,9 @@ int main(){
     init_LFSR(666);
     EnvBlob env = EnvBlob(); 
     IntelligentAgent agent1 = IntelligentAgent();
-    int episode_rewards[HM_EPISODES];
+    //int episode_rewards[HM_EPISODES];
     
-    for (int episode=0; episode<HM_EPISODES; episode++){
+    for (long episode=0; episode<HM_EPISODES; episode++){
         int episode_reward = 0;
         int done = 0;
         env.reset();
@@ -293,9 +323,11 @@ int main(){
             std::cout << "end of ep " << episode << ", reward: " << episode_reward << '\n';
             //break;
         }
-        episode_rewards[episode] = episode_reward;
+        //episode_rewards[episode] = episode_reward;
         agent1.episode_callback();
         
     }
-    //TODO: ifndef DEPLOY, save the table to the .h file
+    #ifndef DEPLOY
+        agent1.to_disk();
+    #endif
 }

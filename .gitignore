@@ -1,2 +1,4 @@
-game-local/FreeRTOS_LC5110_Joystick/Debug/
-game-local/.metadata/
+game-embedded/Debug/
+game-embedded/.metadata/
+assets/
+model.h

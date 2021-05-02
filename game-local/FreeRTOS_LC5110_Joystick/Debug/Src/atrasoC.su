@@ -1,3 +1,0 @@
-atrasoC.cpp:19:6:void atraso_us(uint32_t)	0	static,ignoring_inline_asm
-atrasoC.cpp:29:7:void atraso_ms(uint32_t)	0	static,ignoring_inline_asm
-atrasoC.cpp:40:6:void atraso_loops(uint32_t)	0	static,ignoring_inline_asm
